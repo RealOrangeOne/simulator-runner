@@ -24,10 +24,7 @@ def get_output_slugs():
     """
     Different recordings are based on their result slug
     """
-    output_slugs = []
-    for html_file in OUTPUT_DIR.glob("*.html"):
-        output_slugs.append(html_file.stem)
-    return sorted(output_slugs)
+    return sorted(OUTPUT_DIR.glob("*.html"))
 
 
 

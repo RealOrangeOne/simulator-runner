@@ -1,18 +1,32 @@
 <html>
-<head>
-<title>Simulator Runner</title>
-</head>
-<body>
-{% if simulation_running %}
-<p>Please wait for the current simulation to finish</p>
-{% else %}
-<a href="{{ url_for('submit') }}">Submit</a>
-{% endif %}
+    <head>
+        <title>Simulator Runner</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        {% if simulation_running %}
+            <meta http-equiv="refresh" content="2">
+        {% endif %}
+    </head>
+    <body>
+        <div class="container text-center">
+            <p class="fs-1">Simulator Runner</p>
 
-<ul>
-{% for slug in output_slugs %}
-<li><a href="{{ url_for('output', path=slug + '.html') }}">{{ slug }}</a></li>
-{% endfor %}
-</ul>
-</body>
+            {% if simulation_running %}
+                <p><a class="btn btn-danger btn-lg disabled">Please wait for previous executation</a></p>
+                <p><small>This page will automatically update</small></p>
+            {% else %}
+                <p><a class="btn btn-primary btn-lg" href="{{ url_for('submit') }}">Run Simulation</a></p>
+            {% endif %}
+
+            <h3 class="mt-5">Previous results</h3>
+
+            <div class="list-group">
+                {% for slug in output_slugs %}
+                <a href="{{ url_for('output', path=slug.name) }}" class="list-group-item list-group-item-action">
+                    {{ slug.stem }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    </body>
 </html>
