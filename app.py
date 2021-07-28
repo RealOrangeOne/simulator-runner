@@ -1,5 +1,5 @@
 from starlette.applications import Starlette
-from starlette.responses import JSONResponse
+from starlette.responses import JSONResponse, RedirectResponse
 from starlette.routing import Route, Mount
 import uvicorn
 import os
@@ -16,8 +16,13 @@ async def homepage(request):
     return templates.TemplateResponse("index.html", {'request': request})
 
 
-app = Starlette(debug=True, routes=[
-    Route('/', homepage),
+async def submit(request):
+    return RedirectResponse(request.url_for("homepage"))
+
+
+app = Starlette(routes=[
+    Route('/', homepage, name="homepage"),
+    Route('/submit', submit),
     Mount('/output', app=StaticFiles(directory=BASE_DIR / "output", check_dir=False), name="static")
 ])
 
