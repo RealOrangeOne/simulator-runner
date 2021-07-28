@@ -19,3 +19,5 @@ jobs:
       run: flake8 app.py
     - name: isort
       run: isort app.py
+    - name: mypy
+      run: mypy app.py

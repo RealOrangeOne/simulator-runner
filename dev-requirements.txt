@@ -3,3 +3,4 @@
 black==21.7b
 flake8==3.9.2
 isort==5.9.2
+mypy==0.910

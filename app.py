@@ -8,7 +8,8 @@ from starlette.applications import Starlette
 from starlette.background import BackgroundTask
 from starlette.middleware import Middleware
 from starlette.middleware.gzip import GZipMiddleware
-from starlette.responses import RedirectResponse
+from starlette.requests import Request
+from starlette.responses import RedirectResponse, Response
 from starlette.routing import Mount, Route
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
@@ -17,17 +18,17 @@ BASE_DIR = Path.cwd()
 OUTPUT_DIR = BASE_DIR / "output"
 SIMULATION_LOCK = asyncio.Lock()
 
-templates = Jinja2Templates(directory=BASE_DIR / "templates")
+templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 
-def get_output_slugs():
+def get_output_slugs() -> list[Path]:
     """
     Different recordings are based on their result slug
     """
     return sorted(OUTPUT_DIR.glob("*.html"))
 
 
-async def homepage(request):
+async def homepage(request: Request) -> Response:
     output_slugs = await asyncio.to_thread(get_output_slugs)
     return templates.TemplateResponse(
         "index.html",
@@ -39,7 +40,7 @@ async def homepage(request):
     )
 
 
-async def run_simulation():
+async def run_simulation() -> None:
     async with SIMULATION_LOCK:
         command = shlex.split(os.environ["COMMAND"])
         print("Running simulation")
@@ -51,7 +52,7 @@ async def run_simulation():
         print("Running exited with code", process.returncode)
 
 
-async def submit(request):
+async def submit(request: Request) -> RedirectResponse:
     if not SIMULATION_LOCK.locked():
         task = BackgroundTask(run_simulation)
     return RedirectResponse(request.url_for("homepage"), background=task)
