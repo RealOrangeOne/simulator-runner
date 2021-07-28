@@ -47,7 +47,8 @@ async def run_simulation():
 
 
 async def submit(request):
-    task = BackgroundTask(run_simulation)
+    if not SIMULATION_LOCK.locked():
+        task = BackgroundTask(run_simulation)
     return RedirectResponse(request.url_for("homepage"), background=task)
 
 
