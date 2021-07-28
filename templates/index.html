@@ -3,6 +3,10 @@
 <title>Simulator Runner</title>
 </head>
 <body>
+{% if simulation_running %}
+<p>Please wait for the current simulation to finish</p>
+{% else %}
 <a href="{{ url_for('submit') }}">Submit</a>
+{% endif %}
 </body>
 </html>
