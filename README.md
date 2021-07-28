@@ -1,6 +1,8 @@
-# simulator-runner
+# simulator runner
 
 Run the simulator at the push of a button
+
+[![CI](https://github.com/RealOrangeOne/simulator-runner/actions/workflows/ci.yml/badge.svg)](https://github.com/RealOrangeOne/simulator-runner/actions/workflows/ci.yml)
 
 ## Usage
 
