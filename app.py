@@ -12,13 +12,26 @@ import datetime
 import shlex
 
 BASE_DIR = Path.cwd()
+OUTPUT_DIR = BASE_DIR / "output"
 SIMULATION_LOCK = asyncio.Lock()
 
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
 
 
+def get_output_slugs():
+    """
+    Different recordings are based on their result slug
+    """
+    output_slugs = []
+    for html_file in OUTPUT_DIR.glob("*.html"):
+        output_slugs.append(html_file.stem)
+    return sorted(output_slugs)
+
+
+
 async def homepage(request):
-    return templates.TemplateResponse("index.html", {'request': request, "simulation_running": SIMULATION_LOCK.locked()})
+    output_slugs = await asyncio.to_thread(get_output_slugs)
+    return templates.TemplateResponse("index.html", {'request': request, "simulation_running": SIMULATION_LOCK.locked(), "output_slugs": output_slugs})
 
 
 async def run_simulation():
@@ -27,7 +40,7 @@ async def run_simulation():
         command = shlex.split(os.environ["COMMAND"])
         print("Running simulation")
         process = await asyncio.create_subprocess_exec(*command, env={
-            "OUTPUT_DIR": str(BASE_DIR / "output")
+            "OUTPUT_DIR": str(OUTPUT_DIR)
         })
 
         stdout, stderr = await process.communicate()
@@ -42,7 +55,7 @@ async def submit(request):
 app = Starlette(routes=[
     Route('/', homepage, name="homepage"),
     Route('/submit', submit),
-    Mount('/output', app=StaticFiles(directory=BASE_DIR / "output", check_dir=False), name="static")
+    Mount('/output', app=StaticFiles(directory=OUTPUT_DIR, check_dir=False), name="output")
 ])
 
 
