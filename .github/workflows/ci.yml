@@ -1,0 +1,21 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.9
+    - name: Install dependencies
+      run: pip install -r dev-requirements.txt
+    - name: Black
+      run: black app.py
+    - name: flake8
+      run: flake8 app.py
+    - name: isort
+      run: isort app.py
