@@ -10,6 +10,8 @@ from starlette.background import BackgroundTask
 import asyncio
 import datetime
 import shlex
+from starlette.middleware.gzip import GZipMiddleware
+from starlette.middleware import Middleware
 
 BASE_DIR = Path.cwd()
 OUTPUT_DIR = BASE_DIR / "output"
@@ -52,11 +54,14 @@ async def submit(request):
     return RedirectResponse(request.url_for("homepage"), background=task)
 
 
-app = Starlette(routes=[
-    Route('/', homepage, name="homepage"),
-    Route('/submit', submit),
-    Mount('/output', app=StaticFiles(directory=OUTPUT_DIR, check_dir=False), name="output")
-])
+app = Starlette(
+    routes=[
+        Route('/', homepage, name="homepage"),
+        Route('/submit', submit),
+        Mount('/output', app=StaticFiles(directory=OUTPUT_DIR, check_dir=False), name="output")
+    ],
+    middleware=[Middleware(GZipMiddleware)]
+)
 
 
 if __name__ == "__main__":

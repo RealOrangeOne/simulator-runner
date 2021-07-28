@@ -8,5 +8,11 @@
 {% else %}
 <a href="{{ url_for('submit') }}">Submit</a>
 {% endif %}
+
+<ul>
+{% for slug in output_slugs %}
+<li><a href="{{ url_for('output', path=slug + '.html') }}">{{ slug }}</a></li>
+{% endfor %}
+</ul>
 </body>
 </html>
