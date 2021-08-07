@@ -1,9 +1,13 @@
 import asyncio
 import os
 import shlex
+from datetime import datetime
+from operator import attrgetter
 from pathlib import Path
+from typing import NamedTuple
 
 import uvicorn
+from dateutil.parser import parse as date_parse
 from starlette.applications import Starlette
 from starlette.background import BackgroundTask
 from starlette.middleware import Middleware
@@ -21,21 +25,51 @@ SIMULATION_LOCK = asyncio.Lock()
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 
-def get_output_slugs() -> list[Path]:
+class Output(NamedTuple):
+    directory: Path
+
+    @property
+    def html_name(self) -> str:
+        return next(self.directory.glob("*.html")).name
+
+    @property
+    def html_path(self) -> str:
+        return f"{self.path}/{self.html_name}"
+
+    @property
+    def log_path(self) -> str:
+        return f"{self.path}/logs.txt"
+
+    @property
+    def path(self) -> str:
+        return self.directory.name
+
+    @property
+    def date(self) -> datetime:
+        return date_parse(self.path.replace("_", ":"))
+
+    @property
+    def date_display(self) -> str:
+        return self.date.strftime("%c")
+
+
+def get_outputs() -> list[Output]:
     """
     Different recordings are based on their result slug
     """
-    return sorted(OUTPUT_DIR.glob("*.html"))
+    return sorted(
+        [Output(d) for d in OUTPUT_DIR.iterdir() if d.is_dir()], key=attrgetter("date")
+    )
 
 
 async def homepage(request: Request) -> Response:
-    output_slugs = await asyncio.to_thread(get_output_slugs)
+    outputs = await asyncio.to_thread(get_outputs)
     return templates.TemplateResponse(
         "index.html",
         {
             "request": request,
             "simulation_running": SIMULATION_LOCK.locked(),
-            "output_slugs": output_slugs,
+            "outputs": outputs,
         },
     )
 
