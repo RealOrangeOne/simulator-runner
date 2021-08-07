@@ -82,7 +82,7 @@ async def run_simulation() -> None:
             *command, env={"OUTPUT_DIR": str(OUTPUT_DIR)}
         )
 
-        stdout, stderr = await process.communicate()
+        await asyncio.wait_for(process.communicate(), 150)
         print("Running exited with code", process.returncode)
 
 
