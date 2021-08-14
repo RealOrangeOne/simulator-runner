@@ -8,7 +8,6 @@ Run the simulator at the push of a button
 
 ```
 pip install -r requirements.txt
-mkdir output
 python app.py
 ```
 

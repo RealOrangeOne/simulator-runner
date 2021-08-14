@@ -108,6 +108,10 @@ app = Starlette(
 
 
 if __name__ == "__main__":
+    if not OUTPUT_DIR.exists():
+        print(f"Creating output directory at {OUTPUT_DIR}")
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
     uvicorn.run(
         app,
         host="0.0.0.0",
