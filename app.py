@@ -4,9 +4,10 @@ import shlex
 from datetime import datetime
 from operator import attrgetter
 from pathlib import Path
-from typing import NamedTuple
+from typing import NamedTuple, Optional
 
 import uvicorn
+from dateutil.parser import ParserError
 from dateutil.parser import parse as date_parse
 from starlette.applications import Starlette
 from starlette.background import BackgroundTask
@@ -29,11 +30,11 @@ class Output(NamedTuple):
     directory: Path
 
     @property
-    def html_name(self) -> str:
+    def html_name(self) -> Optional[str]:
         return next(self.directory.glob("*.html")).name
 
     @property
-    def html_path(self) -> str:
+    def html_path(self) -> Optional[str]:
         return f"{self.path}/{self.html_name}"
 
     @property
@@ -45,12 +46,25 @@ class Output(NamedTuple):
         return self.directory.name
 
     @property
-    def date(self) -> datetime:
-        return date_parse(self.path.replace("_", ":"))
+    def date(self) -> Optional[datetime]:
+        try:
+            return date_parse(self.path.replace("_", ":"))
+        except ParserError:
+            return None
 
     @property
-    def date_display(self) -> str:
-        return self.date.strftime("%c")
+    def display(self) -> str:
+        date = self.date
+        if date:
+            return date.strftime("%c")
+        return self.path
+
+    def is_valid(self) -> bool:
+        return (
+            self.html_path is not None
+            and self.date is not None
+            and os.path.exists(self.log_path)
+        )
 
 
 def get_outputs() -> list[Output]:
@@ -58,7 +72,8 @@ def get_outputs() -> list[Output]:
     Different recordings are based on their result slug
     """
     return sorted(
-        [Output(d) for d in OUTPUT_DIR.iterdir() if d.is_dir()], key=attrgetter("date")
+        [Output(d) for d in OUTPUT_DIR.iterdir() if d.is_dir()],
+        key=attrgetter("display"),
     )
 
 
