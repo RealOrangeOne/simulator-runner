@@ -112,6 +112,12 @@ if __name__ == "__main__":
         print(f"Creating output directory at {OUTPUT_DIR}")
         OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
+    if not os.environ.get("COMMAND"):
+        print(
+            "Warning: no command specified. Set the 'COMMAND' environment "
+            "variable to specify how to run the simulator.",
+        )
+
     uvicorn.run(
         app,
         host="0.0.0.0",
