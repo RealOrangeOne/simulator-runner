@@ -24,7 +24,7 @@
                     <div class="card {% if loop.first %}bg-primary{% endif %}" style="width: 25%;">
                         <div class="card-body">
                             {% if output.is_valid() %}
-                                <h5 class="card-title">{{ output.date_display }}</h5>
+                                <h5 class="card-title">{{ output.display }}</h5>
                                 <a href="{{ url_for('output', path=output.html_path) }}" class="card-link">Animation</a>
                                 <a href="{{ url_for('output', path=output.log_path) }}" class="card-link">Logs</a>
                             {% else %}
