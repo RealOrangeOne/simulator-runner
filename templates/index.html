@@ -25,8 +25,8 @@
                         <div class="card-body">
                             {% if output.is_valid() %}
                                 <h5 class="card-title">{{ output.display }}</h5>
-                                <a href="{{ url_for('output', path=output.html_path) }}" class="card-link">Animation</a>
-                                <a href="{{ url_for('output', path=output.log_path) }}" class="card-link">Logs</a>
+                                <a href="{{ url_for('output', path=output.html_path) }}" class="card-link text-dark">Animation</a>
+                                <a href="{{ url_for('output', path=output.log_path) }}" class="card-link text-dark">Logs</a>
                             {% else %}
                                 <h5 class="card-title">{{ output.path }}</h5>
                                 <p>Error</p>
