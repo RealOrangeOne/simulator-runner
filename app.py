@@ -1,6 +1,7 @@
 import asyncio
 import os
 import shlex
+import subprocess
 from datetime import datetime
 from operator import attrgetter
 from pathlib import Path
@@ -89,16 +90,17 @@ async def homepage(request: Request) -> Response:
     )
 
 
+def _actually_run_simulation():
+    command = shlex.split(os.environ["COMMAND"])
+    process = subprocess.run(command, env={"OUTPUT_DIR": str(OUTPUT_DIR)}, timeout=150)
+    return process.returncode
+
+
 async def run_simulation() -> None:
     async with SIMULATION_LOCK:
-        command = shlex.split(os.environ["COMMAND"])
         print("Running simulation")
-        process = await asyncio.create_subprocess_exec(
-            *command, env={"OUTPUT_DIR": str(OUTPUT_DIR)}
-        )
-
-        await asyncio.wait_for(process.communicate(), 150)
-        print("Running exited with code", process.returncode)
+        return_code = await asyncio.to_thread(_actually_run_simulation)
+        print("Running exited with code", return_code)
 
 
 async def submit(request: Request) -> RedirectResponse:
