@@ -90,7 +90,7 @@ async def homepage(request: Request) -> Response:
     )
 
 
-def _actually_run_simulation():
+def _actually_run_simulation() -> int:
     command = shlex.split(os.environ["COMMAND"])
     process = subprocess.run(command, env={"OUTPUT_DIR": str(OUTPUT_DIR)}, timeout=150)
     return process.returncode
