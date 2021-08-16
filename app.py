@@ -27,19 +27,29 @@ SIMULATION_LOCK = asyncio.Lock()
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 
+def safe_parse_date(data: str) -> Optional[datetime]:
+    try:
+        return date_parse(data.replace("_", ":"))
+    except ParserError:
+        return None
+
+
 class Output(NamedTuple):
     directory: Path
 
     @property
-    def html_name(self) -> Optional[str]:
-        return next(self.directory.glob("*.html")).name
+    def html_path(self) -> Optional[str]:
+        try:
+            html_name = next(self.directory.glob("*.html")).name
+        except StopIteration:
+            return None
+
+        return f"{self.path}/{html_name}"
 
     @property
-    def html_path(self) -> str:
-        return f"{self.path}/{self.html_name}"
-
-    @property
-    def log_path(self) -> str:
+    def log_path(self) -> Optional[str]:
+        if not (self.directory / "logs.txt").is_file():
+            return None
         return f"{self.path}/logs.txt"
 
     @property
@@ -48,10 +58,7 @@ class Output(NamedTuple):
 
     @property
     def date(self) -> Optional[datetime]:
-        try:
-            return date_parse(self.path.replace("_", ":"))
-        except ParserError:
-            return None
+        return safe_parse_date(self.path)
 
     @property
     def display(self) -> str:
@@ -60,18 +67,19 @@ class Output(NamedTuple):
             return date.strftime("%c")
         return self.path
 
-    def is_valid(self) -> bool:
-        return self.date is not None
-
 
 def get_outputs() -> list[Output]:
     """
     Different recordings are based on their result slug
     """
     return sorted(
-        [Output(d) for d in OUTPUT_DIR.iterdir() if d.is_dir()],
+        [
+            Output(d)
+            for d in OUTPUT_DIR.iterdir()
+            if d.is_dir() and safe_parse_date(d.name)
+        ],
         key=attrgetter("display"),
-        reverse=True
+        reverse=True,
     )
 
 
@@ -89,7 +97,11 @@ async def homepage(request: Request) -> Response:
 
 def _actually_run_simulation() -> int:
     command = shlex.split(os.environ["COMMAND"])
-    process = subprocess.run(command, env={**os.environ, "OUTPUT_DIR": str(OUTPUT_DIR), "PYTHONHASHSEED": "0"}, timeout=150)
+    process = subprocess.run(
+        command,
+        env={**os.environ, "OUTPUT_DIR": str(OUTPUT_DIR), "PYTHONHASHSEED": "0"},
+        timeout=150,
+    )
     return process.returncode
 
 

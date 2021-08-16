@@ -23,13 +23,15 @@
                 {% for output in outputs %}
                     <div class="card {% if loop.first %}bg-primary{% endif %}" style="width: 25%;">
                         <div class="card-body">
-                            {% if output.is_valid() %}
-                                <h5 class="card-title">{{ output.display }}</h5>
+                            <h5 class="card-title">{{ output.display }}</h5>
+                            {% if output.html_path %}
                                 <a href="{{ url_for('output', path=output.html_path) }}" class="card-link text-dark">Animation</a>
-                                <a href="{{ url_for('output', path=output.log_path) }}" class="card-link text-dark">Logs</a>
+                            {% endif %}
+
+                            {% if output.log_path %}
+                                <a href="{{ url_for('output', path=output.log_path) }}" class="card-link link-dark">Logs</a>
                             {% else %}
-                                <h5 class="card-title">{{ output.path }}</h5>
-                                <p>Error</p>
+                                <a class="card-link disabled link-danger disabled">Logs not available</a>
                             {% endif %}
                         </div>
                     </div>
