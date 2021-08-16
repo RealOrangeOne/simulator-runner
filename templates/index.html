@@ -1,23 +1,29 @@
 <html>
-    <head>
-        <title>Simulator Runner</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+<head>
+    <title>Simulator Runner</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    {% if simulation_running %}
+    <meta http-equiv="refresh" content="2">
+    {% endif %}
+</head>
+
+<body>
+    <div class="container text-center">
+        <p class="fs-1">Simulator Runner</p>
+
         {% if simulation_running %}
-            <meta http-equiv="refresh" content="2">
+        <p><a class="btn btn-danger btn-lg disabled">Please wait for previous executation</a></p>
+        <p><small>This page will automatically update</small></p>
+        {% else %}
+        <p><a class="btn btn-primary btn-lg" href="{{ url_for('submit') }}">Run Simulation</a></p>
         {% endif %}
-    </head>
-    <body>
-        <div class="container text-center">
-            <p class="fs-1">Simulator Runner</p>
 
-            {% if simulation_running %}
-                <p><a class="btn btn-danger btn-lg disabled">Please wait for previous executation</a></p>
-                <p><small>This page will automatically update</small></p>
-            {% else %}
-                <p><a class="btn btn-primary btn-lg" href="{{ url_for('submit') }}">Run Simulation</a></p>
-            {% endif %}
+        <h3 class="mt-5">Previous runs</h3>
 
-            <h3 class="mt-5">Previous runs</h3>
+        <div style="display: flex; align-items: center; flex-direction: column;">
+            {% for output in outputs %}
 
             <div class="card-group">
                 {% for output in outputs %}
@@ -46,9 +52,26 @@
                             <p>Error</p>
                         {% endif %}
                     </div>
+            <div class="card mb-3 {% if loop.first %}bg-primary{% endif %}">
+
+                <div class="card-body">
+                    {% if output.is_valid() %}
+                    <h5 class="card-title">{{ output.display }}</h5>
+                    <a href="{{ url_for('output', path=output.html_path) }}" class="card-link text-dark">Animation</a>
+                    <a href="{{ url_for('output', path=output.log_path) }}" class="card-link text-dark">Logs</a>
+                    {% else %}
+                    <h5 class="card-title">{{ output.path }}</h5>
+                    <p>Error</p>
+                    {% endif %}
                 </div>
+            </div>
+
             {% endfor %}
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    </body>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</body>
+
 </html>
