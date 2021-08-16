@@ -71,6 +71,7 @@ def get_outputs() -> list[Output]:
     return sorted(
         [Output(d) for d in OUTPUT_DIR.iterdir() if d.is_dir()],
         key=attrgetter("display"),
+        reverse=True
     )
 
 
