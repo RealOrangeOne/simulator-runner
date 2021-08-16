@@ -35,7 +35,7 @@ class Output(NamedTuple):
         return next(self.directory.glob("*.html")).name
 
     @property
-    def html_path(self) -> Optional[str]:
+    def html_path(self) -> str:
         return f"{self.path}/{self.html_name}"
 
     @property
@@ -61,11 +61,7 @@ class Output(NamedTuple):
         return self.path
 
     def is_valid(self) -> bool:
-        return (
-            self.html_path is not None
-            and self.date is not None
-            and os.path.exists(self.log_path)
-        )
+        return self.date is not None
 
 
 def get_outputs() -> list[Output]:
