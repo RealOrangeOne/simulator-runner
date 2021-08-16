@@ -21,7 +21,7 @@ from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
 BASE_DIR = Path.cwd()
-OUTPUT_DIR = BASE_DIR / "output"
+OUTPUT_DIR = Path(os.environ.get("OUTPUT_DIR", BASE_DIR / "output")).resolve()
 SIMULATION_LOCK = asyncio.Lock()
 
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
