@@ -34,9 +34,20 @@
                                 <a class="card-link disabled link-danger disabled">Logs not available</a>
                             {% endif %}
                         </div>
+            {% for output in outputs %}
+                <div class="card {% if loop.first %}bg-primary{% endif %}" style="width: 25%;">
+                    <div class="card-body">
+                        {% if output.is_valid() %}
+                            <h5 class="card-title">{{ output.display }}</h5>
+                            <a href="{{ url_for('output', path=output.html_path) }}" class="card-link text-dark">Animation</a>
+                            <a href="{{ url_for('output', path=output.log_path) }}" class="card-link text-dark">Logs</a>
+                        {% else %}
+                            <h5 class="card-title">{{ output.path }}</h5>
+                            <p>Error</p>
+                        {% endif %}
                     </div>
-                {% endfor %}
-            </div>
+                </div>
+            {% endfor %}
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     </body>
