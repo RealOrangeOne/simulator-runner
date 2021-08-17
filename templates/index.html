@@ -19,23 +19,32 @@
 
             <h3 class="mt-5">Previous runs</h3>
 
-            <div class="card-group">
-                {% for output in outputs %}
-                    <div class="card {% if loop.first %}bg-primary{% endif %}" style="width: 25%;">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ output.display }}</h5>
-                            {% if output.html_path %}
-                                <a href="{{ url_for('output', path=output.html_path) }}" class="card-link text-dark">Animation</a>
-                            {% endif %}
+            <div class="row justify-content-center">
+                <div class="col col-8">
+                    {% for output in outputs %}
+                        <div class="card mb-2 {% if loop.first %}border-primary{% endif %}">
+                            <div class="row g-0">
+                                <div class="d-flex col col-5 rounded-start align-items-center justify-content-center {% if loop.first %}bg-primary text-white{% endif %}">
+                                    <h5 class="card-title mb-0">{{ output.display }}</h5>
+                                </div>
+                                <div class="col col-7 rounded-end {% if loop.first %}bg-light{% endif %}">
+                                    <div class="card-body">
+                                        {% if output.html_path %}
+                                            <a href="{{ url_for('output', path=output.html_path) }}" class="card-link text-dark">Animation</a>
+                                        {% endif %}
 
-                            {% if output.log_path %}
-                                <a href="{{ url_for('output', path=output.log_path) }}" class="card-link link-dark">Logs</a>
-                            {% else %}
-                                <a class="card-link disabled link-danger disabled">Logs not available</a>
-                            {% endif %}
+                                        {% if output.log_path %}
+                                            <a href="{{ url_for('output', path=output.log_path) }}" class="card-link link-dark">Logs</a>
+                                        {% else %}
+                                            <a class="card-link disabled link-danger disabled">Logs not available</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                </div>
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
