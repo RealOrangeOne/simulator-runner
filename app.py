@@ -44,8 +44,6 @@ class OutputType(Enum):
 class Output(NamedTuple):
     directory: Path
 
-    
-
     @property
     def html_path(self) -> Optional[str]:
         try:
@@ -80,6 +78,10 @@ class Output(NamedTuple):
     def output_type(self) -> OutputType:
         return parse_output_type(self.path)
     
+    @property
+    def zone(self) -> Optional[int]:
+        return parse_zone(self.path)
+    
 
 def parse_output_type(data: str) -> OutputType:
     split_data = data.split('@')
@@ -90,6 +92,13 @@ def parse_output_type(data: str) -> OutputType:
             return OutputType.FRIENDLY
     else:
         return OutputType.PRACTICE
+
+def parse_zone(data:str) -> Optional[int]:
+    split_data = data.split('$')
+    if len(split_data) > 1:
+        return int(split_data[1])
+    else:
+        return None
 
 def get_outputs() -> list[Output]:
     """
