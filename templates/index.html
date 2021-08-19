@@ -24,12 +24,12 @@
             <div class="row justify-content-center">
                 <div class="col col-8">
                     {% for output in outputs %}
-                        <div class="card mb-2 {% if loop.first %}border-primary{% endif %}">
+                        <div class="card mb-2 {% if loop.first %}border-primary bg-light{% endif %}">
                             <div class="row g-0">
                                 <div class="d-flex col col-5 rounded-start align-items-center justify-content-center {% if loop.first %}bg-primary text-white{% endif %}">
                                     <h5 class="card-title mb-0">{{ output.display }}</h5>
                                 </div>
-                                <div class="col col-7 rounded-end {% if loop.first %}bg-light{% endif %}">
+                                <div class="col col-4">
                                     <div class="card-body">
                                         {% if output.html_path %}
                                             <a href="{{ url_for('output', path=output.html_path) }}" class="card-link text-dark">Animation</a>
@@ -39,6 +39,20 @@
                                             <a href="{{ url_for('output', path=output.log_path) }}" class="card-link link-dark">Logs</a>
                                         {% else %}
                                             <a class="card-link disabled link-danger disabled">Logs not available</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="col col-3">
+                                    <div class="card-body">
+                                        {% if output.output_type == 1 %}
+                                        <span class="badge rounded-pill bg-secondary">Friendly</span>
+                                        {% elif output.output_type == 2 %}
+                                        <span class="badge rounded-pill bg-secondary">Competition</span>
+                                        {% endif %}
+                                        {% if output.zone == 0 %}
+                                        <span class="badge rounded-pill text-dark" style="background-color: #e685b5">zone-0</span>
+                                        {% elif output.zone == 1 %}
+                                        <span class="badge rounded-pill text-dark" style="background-color: #ffda6a">zone-1</span>
                                         {% endif %}
                                     </div>
                                 </div>

@@ -3,6 +3,7 @@ import os
 import shlex
 import subprocess
 from datetime import datetime
+from enum import IntEnum
 from operator import attrgetter
 from pathlib import Path
 from typing import NamedTuple, Optional
@@ -29,9 +30,15 @@ templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 def safe_parse_date(data: str) -> Optional[datetime]:
     try:
-        return date_parse(data.replace("_", ":"))
+        return date_parse(data.split('@')[0].replace("_", ":"))
     except ParserError:
         return None
+
+
+class OutputType(IntEnum):
+    PRACTICE = 0
+    FRIENDLY = 1
+    COMPETITION = 2
 
 
 class Output(NamedTuple):
@@ -67,6 +74,30 @@ class Output(NamedTuple):
             return date.strftime("%c")
         return self.path
 
+    @property
+    def output_type(self) -> OutputType:
+        return parse_output_type(self.path)
+    
+    @property
+    def zone(self) -> Optional[int]:
+        return parse_zone(self.path)
+    
+
+def parse_output_type(data: str) -> OutputType:
+    split_data = data.split('@')
+    if len(split_data) > 1:
+        if split_data[1] == "competition":
+            return OutputType.COMPETITION
+        elif split_data[1] == "friendly":
+            return OutputType.FRIENDLY
+    return OutputType.PRACTICE
+
+def parse_zone(data:str) -> Optional[int]:
+    split_data = data.split('@')
+    if len(split_data) > 2:
+        return int(split_data[2])
+    else:
+        return None
 
 def get_outputs() -> list[Output]:
     """
