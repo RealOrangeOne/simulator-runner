@@ -42,8 +42,16 @@
                                 </div>
                                 <div class="col col-3">
                                     <div class="card-body">
+                                        {% if output.output_type == 1 %}
                                         <span class="badge rounded-pill bg-secondary">Friendly</span>
+                                        {% elif output.output_type == 2 %}
+                                        <span class="badge rounded-pill bg-secondary">Competition</span>
+                                        {% endif %}
+                                        {% if output.zone == 0 %}
                                         <span class="badge rounded-pill text-dark" style="background-color: #e685b5">zone-0</span>
+                                        {% elif output.zone == 1 %}
+                                        <span class="badge rounded-pill text-dark" style="background-color: #ffda6a">zone-1</span>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
