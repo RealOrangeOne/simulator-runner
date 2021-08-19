@@ -22,12 +22,12 @@
             <div class="row justify-content-center">
                 <div class="col col-8">
                     {% for output in outputs %}
-                        <div class="card mb-2 {% if loop.first %}border-primary{% endif %}">
+                        <div class="card mb-2 {% if loop.first %}border-primary bg-light{% endif %}">
                             <div class="row g-0">
                                 <div class="d-flex col col-5 rounded-start align-items-center justify-content-center {% if loop.first %}bg-primary text-white{% endif %}">
                                     <h5 class="card-title mb-0">{{ output.display }}</h5>
                                 </div>
-                                <div class="col col-7 rounded-end {% if loop.first %}bg-light{% endif %}">
+                                <div class="col col-4">
                                     <div class="card-body">
                                         {% if output.html_path %}
                                             <a href="{{ url_for('output', path=output.html_path) }}" class="card-link text-dark">Animation</a>
@@ -40,8 +40,13 @@
                                         {% endif %}
                                     </div>
                                 </div>
+                                <div class="col col-3">
+                                    <div class="card-body">
+                                        <span class="badge rounded-pill bg-secondary">Friendly</span>
+                                        <span class="badge rounded-pill text-dark" style="background-color: #e685b5">zone-0</span>
+                                    </div>
+                                </div>
                             </div>
-                            
                         </div>
                     {% endfor %}
                 </div>

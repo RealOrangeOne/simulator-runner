@@ -3,7 +3,7 @@ import os
 import shlex
 import subprocess
 from datetime import datetime
-from enum import Enum
+from enum import IntEnum
 from operator import attrgetter
 from pathlib import Path
 from typing import NamedTuple, Optional
@@ -35,7 +35,7 @@ def safe_parse_date(data: str) -> Optional[datetime]:
         return None
 
 
-class OutputType(Enum):
+class OutputType(IntEnum):
     PRACTICE = 0
     FRIENDLY = 1
     COMPETITION = 2
