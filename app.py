@@ -90,13 +90,12 @@ def parse_output_type(data: str) -> OutputType:
             return OutputType.COMPETITION
         elif split_data[1] == "friendly":
             return OutputType.FRIENDLY
-    else:
-        return OutputType.PRACTICE
+    return OutputType.PRACTICE
 
 def parse_zone(data:str) -> Optional[int]:
-    split_data = data.split('$')
-    if len(split_data) > 1:
-        return int(split_data[1])
+    split_data = data.split('@')
+    if len(split_data) > 2:
+        return int(split_data[2])
     else:
         return None
 
