@@ -109,7 +109,7 @@ def get_outputs() -> list[Output]:
             for d in OUTPUT_DIR.iterdir()
             if d.is_dir() and safe_parse_date(d.name)
         ],
-        key=attrgetter("display"),
+        key=attrgetter("date"),
         reverse=True,
     )
 
